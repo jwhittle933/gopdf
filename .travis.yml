@@ -1,0 +1,13 @@
+sudo: false
+language: go
+go:
+  - 1.11.x
+  - master
+script:
+  - go fmt
+  - go get -u golang.org/x/lint/golint
+  - golint
+  - go test
+notifications:
+  email:
+    - awhittlecrazy@gmail.com
