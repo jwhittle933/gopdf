@@ -1,6 +1,9 @@
 package gopdf
 
 import (
+	"bytes"
+	"fmt"
+	"io"
 	"io/ioutil"
 	"mime/multipart"
 )
@@ -31,14 +34,16 @@ type PDF struct {
 
 // File struct for data and receivers
 type File struct {
+	File     io.ReaderAt
+	Size     int64
 	data     []byte
 	Content  string
 	Font     string
 	FontSize float64
 }
 
-// ExposeFileHTTP func accepts *multipart.FileHeader and exposes multipart.File
-func ExposeFileHTTP(f *multipart.FileHeader) ([]byte, error) {
+// OpenFileHTTP func accepts *multipart.FileHeader and exposes multipart.File
+func OpenFileHTTP(f *multipart.FileHeader) (*File, error) {
 	file, err := f.Open()
 	if err != nil {
 		return nil, err
@@ -51,5 +56,35 @@ func ExposeFileHTTP(f *multipart.FileHeader) ([]byte, error) {
 		return nil, err
 	}
 
-	return data, nil
+	newFile := &File{
+		File: file,
+		Size: f.Size,
+		data: data,
+	}
+
+	return newFile, nil
+}
+
+// OpenLocal func
+func OpenLocal(filePath string) {
+	//
+}
+
+/*
+ * Example:
+ * f, err := gopdf.OpenFileHTTP(http.MultipartForm.File[fileName])
+ * err := f.verifyPDF()
+ * if err != nil { panic(err) }
+ */
+func (f *File) verifyPDF() error {
+	buf := make([]byte, 10)
+	f.File.ReadAt(buf, 0)
+	if !bytes.HasPrefix(buf, []byte("%PDF-1.")) || buf[7] < '0' || buf[8] != '\r' && buf[8] != '\n' {
+		return fmt.Errorf("This is not a PDF file: invalid header")
+	}
+
+	if !bytes.HasSuffix(buf, []byte("%%EOF")) {
+		return fmt.Errorf("This is not a PDF file: missing EOF")
+	}
+	return nil
 }
