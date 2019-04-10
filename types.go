@@ -2,8 +2,8 @@ package gopdf
 
 import "io"
 
-//Reader Interface
-type Reader interface {
+//ReaderI Interface
+type ReaderI interface {
 	ReadAt(buf []byte, pos int64) (n int, err error)
 	Read(buf []byte) (n int, err error)
 	Slice(n int) []byte
@@ -11,6 +11,11 @@ type Reader interface {
 	ReadByte() (c byte, err error)
 	UnreadByte() error
 	Size() int64
+}
+
+//Reader struct
+type Reader struct {
+	f io.ReaderAt
 }
 
 // PDF struct for internal type reference.
@@ -40,7 +45,7 @@ type File struct {
 // PdfReader struct
 type PdfReader struct {
 	File      string
-	rdr       Reader
+	rdr       ReaderI
 	StartXref int
 	Xref      map[int]int
 	Trailer   map[string][]byte
