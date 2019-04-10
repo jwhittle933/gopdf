@@ -3,7 +3,6 @@ package gopdf
 import (
 	"bytes"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"mime/multipart"
 	"os"
@@ -60,12 +59,6 @@ func OpenLocal(filePath string) (*File, error) {
 
 	return newFile, nil
 
-}
-
-// GetPlainText func
-func (r *Reader) GetPlainText(io.Reader, error) {
-	pages := r.NumPage()
-	var buf bytes.Buffer
 }
 
 /*
