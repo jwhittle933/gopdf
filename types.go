@@ -2,6 +2,17 @@ package gopdf
 
 import "io"
 
+//Reader Interface
+type Reader interface {
+	ReadAt(buf []byte, pos int64) (n int, err error)
+	Read(buf []byte) (n int, err error)
+	Slice(n int) []byte
+	Seek(off int, whence int) (ret int64, err error)
+	ReadByte() (c byte, err error)
+	UnreadByte() error
+	Size() int64
+}
+
 // PDF struct for internal type reference.
 type PDF struct {
 	// Scalar value types
@@ -26,7 +37,11 @@ type File struct {
 	FontSize float64
 }
 
-// Value struct
-type Value struct {
-	data interface{}
+// PdfReader struct
+type PdfReader struct {
+	File      string
+	rdr       Reader
+	StartXref int
+	Xref      map[int]int
+	Trailer   map[string][]byte
 }

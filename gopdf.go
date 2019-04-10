@@ -12,9 +12,6 @@ import (
  !! http://www.planetpdf.com/developer/article.asp?ContentID=navigating_the_internal_struct&page=0
  * See source above for authorial credit of some of the following info.
  *
- * Credit is also due to github.com/rsc/pdf as well as a fork from this repo
- * at github.com/ledongthuc/pdf as mental aids and idea completion.
- *
  * The PDF file format is text with some binary data mixed in.
 */
 
